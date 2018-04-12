@@ -1,6 +1,6 @@
 <template>
   <div class="tab">
-    <router-link tag="div" class="tab-item" to="/recommand">
+    <router-link tag="div" class="tab-item" to="/recommend">
       <span class="tab-item-name">推荐</span>
     </router-link>
     <router-link tag="div" class="tab-item" to="/singer">

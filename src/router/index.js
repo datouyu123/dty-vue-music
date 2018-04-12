@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Recommand from 'components/recommand/recommand'
+import Recommend from 'components/recommend/recommend'
 import Search from 'components/search/search'
 import Singer from 'components/singer/singer'
 import Rank from 'components/rank/rank'
@@ -11,11 +11,11 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/recommand'
+      redirect: '/recommend'
     },
     {
-      path: '/recommand',
-      component: Recommand
+      path: '/recommend',
+      component: Recommend
     },
     {
       path: '/search',
