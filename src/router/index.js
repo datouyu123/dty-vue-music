@@ -11,23 +11,23 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/recommend'
+      redirect: '/recommand'
     },
     {
       path: '/recommand',
-      components: Recommand
+      component: Recommand
     },
     {
       path: '/search',
-      components: Search
+      component: Search
     },
     {
       path: '/singer',
-      components: Singer
+      component: Singer
     },
     {
       path: '/rank',
-      components: Rank
+      component: Rank
     }
   ]
 })
