@@ -12,7 +12,17 @@
       </div>
       <div class="recommend-list">
         <h1 class="list-title">热门歌单搜索</h1>
-        <ul></ul>
+        <ul>
+          <li v-for="(item, index) in discList" :key="index" class="item">
+            <div class="icon">
+              <img width="60" height="60" :src="item.imgurl">
+            </div>
+            <div class="text">
+              <h2 class="name" v-html="item.creator.name"></h2>
+              <p class="desc" v-html="item.dissname"></p>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -28,7 +38,8 @@ export default {
   name: 'recommend',
   data() {
     return {
-      recommends: []
+      recommends: [],
+      discList: []
     }
   },
   created() {
@@ -46,9 +57,8 @@ export default {
     },
     _getDiscList() {
       getDiscList().then((res) => {
-        console.log('res: ' + res)
         if (res.code === ERR_OK) {
-          console.log(res.data.list)
+          this.discList = res.data.list
         }
       })
     }
@@ -82,4 +92,31 @@ export default {
           text-align: center
           font-size: $font-size-medium
           color: $color-theme
+        .item
+          display: flex
+          box-sizing: border-box
+          align-items: center
+          padding: 0 20px 20px 20px
+          .icon
+            flex: 0 0 60px
+            width: 60px
+            padding-right: 20px
+          .text
+            display: flex
+            flex-direction: column
+            justify-content: center
+            flex: 1
+            line-height: 20px
+            overflow: hidden
+            font-size: $font-size-medium
+            .name
+              margin-bottom: 10px
+              color: $color-text
+            .desc
+              color: $color-text-d
+      .loading-container
+        position: absolute
+        width: 100%
+        top: 50%
+        transform: translateY(-50%)
 </style>
