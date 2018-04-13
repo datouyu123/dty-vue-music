@@ -4,17 +4,24 @@
       <slot>
       </slot>
     </div>
-    <div class="dots"></div>
+    <div class="dots">
+      <span class="dot" :class="{active: currentPageIndex === index}" v-for="(item, index) in dots" :key="index"></span>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-// import BScroll from 'better-scroll'
+import BScroll from 'better-scroll'
 import {addClass} from 'common/js/dom'
 
 export default {
-
   name: 'slider',
+  data() {
+    return {
+      dots: [],
+      currentPageIndex: 0
+    }
+  },
   props: {
     // 是否轮播
     loop: {
@@ -36,33 +43,83 @@ export default {
     // 浏览器一般17毫秒刷新一次
     setTimeout(() => {
       this._setSliderWidth()
+      this._initDots()
       this._initSlider()
+
+      if (this.autoPlay) {
+        this._play()
+      }
     }, 20)
+
+    // 当window宽高变化时resize
+    window.addEventListener('resize', () => {
+      if (!this.slider) {
+        return
+      }
+      this._setSliderWidth(true)
+      // 宽度发生变化，重新计算
+      this.slider.refresh()
+    })
   },
   methods: {
-    _setSliderWidth() {
+    // 计算设置宽度
+    _setSliderWidth(isResize) {
       this.children = this.$refs.sliderGroup.children
-      console.log('children: ' + this.children)
+      console.log('this.children: ' + this.children.length)
       let width = 0
       let sliderWidth = this.$refs.slider.clientWidth
       for (let i = 0; i < this.children.length; i++) {
         let child = this.children[i]
-        // 保证渲染成功
+        // 添加类slider-item确保渲染样式正确
         addClass(child, 'slider-item')
         // 等于父容器宽度
         child.style.width = sliderWidth + 'px'
         width += sliderWidth
       }
-      if (this.loop) {
+      // loop true 两边会克隆两个dom
+      if (this.loop && !isResize) {
         width += 2 * sliderWidth
       }
       this.$refs.sliderGroup.style.width = width + 'px'
     },
+    _initDots() {
+      this.dots = new Array(this.children.length)
+    },
     _initSlider() {
+      this.slider = new BScroll(this.$refs.slider, {
+        scrollX: true,
+        scrollY: false,
+        momentum: false, // 惯性
+        snap: true,
+        snapLoop: this.loop,
+        snapSpeed: 400,
+        snapThreshold: 0.3
+      })
+      // 给slider绑定一个事件，更改currentPageIndex，并当autoplay时绑定_play()
+      this.slider.on('scrollEnd', () => {
+        let pageIndex = this.slider.getCurrentPage().pageX
+        if (this.loop) {
+          pageIndex -= 1
+        }
+        this.currentPageIndex = pageIndex
 
+        if (this.autoPlay) {
+          clearTimeout(this.timer)
+          this._play()
+        }
+      })
+    },
+    _play() {
+      // this.currentPageIndex start from 0
+      let pageIndex = this.currentPageIndex + 1
+      if (this.loop) {
+        pageIndex += 1
+      }
+      this.timer = setTimeout(() => {
+        this.slider.goToPage(pageIndex, 0, 400)
+      }, this.interval)
     }
   }
-
 }
 
 </script>
