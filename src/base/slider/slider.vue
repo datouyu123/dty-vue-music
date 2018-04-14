@@ -61,6 +61,15 @@ export default {
       this.slider.refresh()
     })
   },
+  deactivated() {
+    clearTimeout(this.timer)
+  },
+  beforeDestroy() {
+    clearTimeout(this.timer)
+  },
+  destroyed() {
+    clearTimeout(this.timer)
+  },
   methods: {
     // 计算设置宽度
     _setSliderWidth(isResize) {
@@ -119,9 +128,6 @@ export default {
         this.slider.goToPage(pageIndex, 0, 400)
       }, this.interval)
     }
-  },
-  destroyed() {
-    clearTimeout(this.timer)
   }
 }
 
