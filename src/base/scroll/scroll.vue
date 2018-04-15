@@ -55,11 +55,6 @@ export default {
         this.refresh()
       }, 20)
     }
-  },
-  data() {
-    return {
-
-    }
   }
 }
 </script>
