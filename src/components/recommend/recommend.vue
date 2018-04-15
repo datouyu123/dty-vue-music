@@ -2,7 +2,7 @@
   <div class="recommend">
     <scroll ref="scroll" class="recommend-content" :data="discList">
       <div>
-        <div v-if="recommends.length" class="slide-wrapper" ref="sliderWrapper">
+        <div v-if="recommends.length" class="slider-wrapper" ref="sliderWrapper">
           <slider>
             <div v-for="item in recommends" :key="item.id">
               <a :href="item.linkUrl">
@@ -52,7 +52,6 @@ export default {
     this._getRecommend()
     this._getDiscList()
   },
-  mounted() {},
   methods: {
     _getRecommend() {
       getRecommend().then((res) => {

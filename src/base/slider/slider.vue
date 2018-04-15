@@ -61,6 +61,11 @@ export default {
       this.slider.refresh()
     })
   },
+  activated() {
+    if (this.autoPlay) {
+      this._play()
+    }
+  },
   deactivated() {
     clearTimeout(this.timer)
   },
@@ -74,7 +79,7 @@ export default {
     // 计算设置宽度
     _setSliderWidth(isResize) {
       this.children = this.$refs.sliderGroup.children
-      console.log('this.children: ' + this.children.length)
+
       let width = 0
       let sliderWidth = this.$refs.slider.clientWidth
       for (let i = 0; i < this.children.length; i++) {
@@ -115,6 +120,11 @@ export default {
         if (this.autoPlay) {
           clearTimeout(this.timer)
           this._play()
+        }
+      })
+      this.slider.on('beforeScrollStart', () => {
+        if (this.autoPlay) {
+          clearTimeout(this.timer)
         }
       })
     },
