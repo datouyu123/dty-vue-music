@@ -53,7 +53,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     watchOptions: {
       poll: config.dev.poll,
     },
-            /**
+    /**
      * axios
      */
     before(app) {
