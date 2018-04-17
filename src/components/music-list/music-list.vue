@@ -7,7 +7,9 @@
     <div class="bg-image" :style="bgStyle" ref="bgImage">
       <div class="filter"></div>
     </div>
-    <scroll :data="songs" class="list" ref="list">
+    <div class="bg-layer" ref="layer"></div>
+    <scroll :data="songs" @scroll="scroll"
+            :listen-scroll="listenScroll" :probe-type="probeType" class="list" ref="list">
       <div class="song-list-wrapper">
         <song-list :songs="songs"></song-list>
       </div>
@@ -36,14 +38,38 @@ export default {
       default: ''
     }
   },
+  data() {
+    return {
+      scrollY: 0
+    }
+  },
   computed: {
     bgStyle() {
       return `background-image:url(${this.bgImage})`
     }
   },
+  created() {
+    this.probeType = 3
+    this.listenScroll = true
+  },
   mounted() {
+    this.imageHeight = this.$refs.bgImage.clientHeight
+    // layer最远滚的距离，往上的是负值
+    this.minTranslateY = -this.imageHeight
     // 设置scroll的top距离，使得scroll移动至背景图下方
-    this.$refs.list.$el.style.top = `${this.$refs.bgImage.clientHeight}px`
+    this.$refs.list.$el.style.top = `${this.imageHeight}px`
+  },
+  methods: {
+    scroll(pos) {
+      this.scrollY = pos.y
+    }
+  },
+  watch: {
+    scrollY: function(newY) {
+      let translateY = Math.max(this.minTranslateY, newY)
+      this.$refs.layer.style['transform'] = `translate3d(0, ${translateY}px, 0)`
+      this.$refs.layer.style['webkitTransform'] = `translate3d(0, ${translateY}px, 0)`
+    }
   },
   components: {
     Scroll,
@@ -133,6 +159,7 @@ export default {
       bottom: 0
       width: 100%
       background: $color-background
+      // overflow: hidden
       .song-list-wrapper
         padding: 20px 30px
       .loading-container
