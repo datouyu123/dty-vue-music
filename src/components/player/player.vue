@@ -28,14 +28,14 @@
             <div class="icon i-left">
               <i class="icon-sequence"></i>
             </div>
-            <div class="icon i-left">
-              <i class="icon-prev"></i>
+            <div class="icon i-left" :class="disableCls">
+              <i @click="prev" class="icon-prev"></i>
             </div>
-            <div class="icon i-center">
+            <div class="icon i-center" :class="disableCls">
               <i @click="togglePlaying" :class="playIcon"></i>
             </div>
-            <div class="icon i-right">
-              <i class="icon-next"></i>
+            <div class="icon i-right" :class="disableCls">
+              <i @click="next" class="icon-next"></i>
             </div>
             <div class="icon i-right">
               <i class="icon-not-favorite"></i>
@@ -63,7 +63,7 @@
         </div>
       </div>
     </transition>
-    <audio ref="audio" :src="currentSong.url"></audio>
+    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error"></audio>
   </div>
 </template>
 
@@ -74,6 +74,11 @@ export default {
 
   name: 'player',
 
+  data() {
+    return {
+      songReady: false
+    }
+  },
   computed: {
     // 播放／暂停图标变更
     playIcon() {
@@ -86,11 +91,16 @@ export default {
     cdCls() {
       return this.playing ? 'play' : 'play pause'
     },
+    disableCls() {
+      return this.songReady ? '' : 'disable'
+    },
     ...mapGetters([
       'fullScreen',
       'playlist',
       'currentSong',
-      'playing'])
+      'playing',
+      'currentIndex'
+    ])
   },
   methods: {
     back() {
@@ -103,9 +113,51 @@ export default {
     togglePlaying() {
       this.setPlayingState(!this.playing)
     },
+    // 上一首歌曲
+    prev() {
+      if (!this.songReady) {
+        return
+      }
+      let index = this.currentIndex - 1
+      // 当前播放最后一首歌曲
+      if (index === -1) {
+        index = this.playlist.length - 1
+      }
+      this.setCurrentIndex(index)
+      // 当前是暂停状态，切歌要变换状态
+      if (!this.playing) {
+        this.togglePlaying()
+      }
+      this.songReady = false
+    },
+    // 下一首歌曲
+    next() {
+      if (!this.songReady) {
+        return
+      }
+      let index = this.currentIndex + 1
+      // 当前播放最后一首歌曲
+      if (index === this.playlist.length) {
+        index = 0
+      }
+      this.setCurrentIndex(index)
+      // 当前是暂停状态，切歌要变换状态
+      if (!this.playing) {
+        this.togglePlaying()
+      }
+      this.songReady = false
+    },
+    // 歌曲已经加载完可以播放
+    ready() {
+      this.songReady = true
+    },
+    error() {
+      this.songReady = true
+    },
     ...mapMutations({
       setFullScreen: 'SET_FULL_SCREEN',
-      setPlayingState: 'SET_PLAYING_STATE'
+      setPlayingState: 'SET_PLAYING_STATE',
+      setCurrentIndex: 'SET_CURRENT_INDEX'
     })
   },
   watch: {
