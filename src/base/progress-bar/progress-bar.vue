@@ -63,7 +63,9 @@ export default {
     },
     // 点击进度条位置快进或快退歌曲
     progressClick(e) {
-      this._offset(e.offsetX)
+      const rect = this.$refs.progressBar.getBoundingClientRect()
+      const offsetWidth = e.pageX - rect.left
+      this._offset(offsetWidth)
       this._triggerPercent()
     }
   },
