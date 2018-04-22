@@ -265,12 +265,12 @@ export default {
      */
     handleLyric({lineNum, txt}) {
       this.currentLineNum = lineNum
-      // if (lineNum > 5) {
-      //   let lineEl = this.$refs.lyricLine[lineNum - 5]
-      //   this.$refs.lyricList.scrollToElement(lineEl, 1000)
-      // } else {
-      //   this.$refs.lyricList.scrollTo(0, 0, 1000)
-      // }
+      if (lineNum > 5) {
+        let lineEl = this.$refs.lyricLine[lineNum - 5]
+        this.$refs.lyricList.scrollToElement(lineEl, 1000)
+      } else {
+        this.$refs.lyricList.scrollTo(0, 0, 1000)
+      }
     },
     ...mapMutations({
       setFullScreen: 'SET_FULL_SCREEN',
