@@ -22,6 +22,16 @@
               </div>
             </div>
           </div>
+          <scroll class="middle-r" ref="lyricList" :data="currentLyric && currentLyric.lines">
+            <div class="lyric-wrapper">
+              <div v-if="currentLyric">
+                <p ref="lyricLine"
+                   class="text"
+                   :class="{'current' : currentLineNum === index}"
+                   v-for="(line, index) in currentLyric.lines" :key="index">{{line.txt}}</p>
+              </div>
+            </div>
+          </scroll>
         </div>
         <div class="bottom">
           <div class="progress-wrapper">
@@ -79,6 +89,8 @@ import {mapGetters, mapMutations} from 'vuex'
 import ProgressBar from 'base/progress-bar/progress-bar'
 import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/util'
+import Lyric from 'lyric-parser'
+import Scroll from 'base/scroll/scroll'
 
 export default {
 
@@ -87,7 +99,9 @@ export default {
   data() {
     return {
       songReady: false,
-      currentTime: 0
+      currentTime: 0,
+      currentLyric: null,
+      currentLineNum: 0
     }
   },
   computed: {
@@ -234,6 +248,30 @@ export default {
       })
       this.setCurrentIndex(index)
     },
+    // 获取歌词
+    getLyric() {
+      this.currentSong.getLyric().then((lyric) => {
+        this.currentLyric = new Lyric(lyric, this.handleLyric)
+        if (this.playing) {
+          this.currentLyric.play()
+        }
+      })
+    },
+    /**
+     * [handleLyric Lyric的回调函数]
+     * @param  {[type]} options.lineNum [当前播放行数]
+     * @param  {[type]} options.txt     [当前播放歌词]
+     * @return {[type]}                 [description]
+     */
+    handleLyric({lineNum, txt}) {
+      this.currentLineNum = lineNum
+      // if (lineNum > 5) {
+      //   let lineEl = this.$refs.lyricLine[lineNum - 5]
+      //   this.$refs.lyricList.scrollToElement(lineEl, 1000)
+      // } else {
+      //   this.$refs.lyricList.scrollTo(0, 0, 1000)
+      // }
+    },
     ...mapMutations({
       setFullScreen: 'SET_FULL_SCREEN',
       setPlayingState: 'SET_PLAYING_STATE',
@@ -252,6 +290,7 @@ export default {
         // DOM更新了
         // 播放歌曲
         this.$refs.audio.play()
+        this.getLyric()
       })
     },
     // 当前播放状态变更了
@@ -263,7 +302,8 @@ export default {
     }
   },
   components: {
-    ProgressBar
+    ProgressBar,
+    Scroll
   }
 }
 </script>

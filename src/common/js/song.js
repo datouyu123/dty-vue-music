@@ -1,3 +1,7 @@
+import {getLyric} from 'api/song'
+import {ERR_OK} from 'api/config'
+import { Base64 } from 'js-base64'
+
 export class Song {
   constructor({id, mid, singer, name, album, duration, image, url}) {
     this.id = id
@@ -8,6 +12,23 @@ export class Song {
     this.duration = duration // 歌曲长度
     this.image = image
     this.url = url
+  }
+
+  // 获取歌词并decode base64, 获取歌词后的逻辑抛给外层处理
+  getLyric() {
+    if (this.lyric) {
+      return Promise.resolve(this.lyric)
+    }
+    return new Promise((resolve, reject) => {
+      getLyric(this.mid).then((res) => {
+        if (res.retcode === ERR_OK) {
+          this.lyric = Base64.decode(res.lyric)
+          resolve(this.lyric)
+        } else {
+          reject(new Error('no lyric'))
+        }
+      })
+    })
   }
 }
 // 工厂函数，简化调用代码
