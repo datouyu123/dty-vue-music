@@ -1,0 +1,2 @@
+webpackJsonp([5],{Kjo5:function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var r={render:function(){var e=this.$createElement;return(this._self._c||e)("div",[this._v("\n  排名页面\n")])},staticRenderFns:[]};var a=t("VU/8")({name:"rank",data:function(){return{}}},r,!1,function(e){t("rroP")},"data-v-25f17df3",null);n.default=a.exports},rroP:function(e,n){}});
+//# sourceMappingURL=5.f51b7b5249e62742a9f5.js.map
