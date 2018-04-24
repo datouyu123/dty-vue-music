@@ -16,11 +16,11 @@
           <ul>
             <li v-for="(item, index) in discList" :key="index" class="item">
               <div class="icon">
-                <img width="60" height="60" v-lazy="item.imgurl">
+                <img width="60" height="60" v-lazy="item.picUrl">
               </div>
               <div class="text">
-                <h2 class="name" v-html="item.creator.name"></h2>
-                <p class="desc" v-html="item.dissname"></p>
+                <h2 class="name" v-html="item.songListAuthor"></h2>
+                <p class="desc" v-html="item.songListDesc"></p>
               </div>
             </li>
           </ul>
@@ -63,7 +63,7 @@ export default {
     _getDiscList() {
       getDiscList().then((res) => {
         if (res.code === ERR_OK) {
-          this.discList = res.data.list
+          this.discList = res.data.songList
         }
       })
     },

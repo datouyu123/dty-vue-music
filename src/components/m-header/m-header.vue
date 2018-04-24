@@ -1,7 +1,7 @@
 <template>
   <div class="m-header">
     <div class="icon"></div>
-    <h1 class="text">Datouyu Music</h1>
+    <h1 class="text">小猪音乐</h1>
   </div>
 </template>
 
@@ -30,11 +30,11 @@ export default {
       display: inline-block
       vertical-align: top
       margin-top: 6px
-      width: 30px
+      width: 32px
       height: 32px
-      margin-right: 9px
-      bg-image('logo')
-      background-size: 30px 32px
+      margin-right: 8px
+      bg-image('logo-pig')
+      background-size: 32px 32px
     .text
       display: inline-block
       vertical-align: top
