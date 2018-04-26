@@ -26,7 +26,7 @@
           </ul>
         </div>
       </div>
-      <div class="loading-container" v-show="!discList.length">
+      <div class="loading-container" v-show="!discList.length && !loadingTimeOut">
         <loading></loading>
       </div>
     </scroll>
@@ -45,19 +45,27 @@ export default {
   data() {
     return {
       recommends: [],
-      discList: []
+      discList: [],
+      loadingTimeOut: false
     }
   },
   created() {
     this._getRecommend()
-    this._getDiscList()
+    // this._getDiscList()
   },
   methods: {
     _getRecommend() {
+      this.loadingTimeOut = false
       getRecommend().then((res) => {
         if (res.code === ERR_OK) {
           this.recommends = res.data.slider
+          this.discList = res.data.songList
         }
+        // 超过5秒算请求超时，隐藏loading
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
+          this.loadingTimeOut = true
+        }, 5000)
       })
     },
     _getDiscList() {
@@ -71,7 +79,9 @@ export default {
     loadImage() {
       if (!this.checkLoaded) {
         this.checkLoaded = true
-        this.$refs.scroll.refresh()
+        setTimeout(() => {
+          this.$refs.scroll.refresh()
+        }, 20)
       }
     }
   },
